@@ -18,6 +18,18 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        sonar-scanner \
+                          -Dsonar.projectKey=python-sonar-demo \
+                          -Dsonar.sources=.
+                    '''
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh '''
