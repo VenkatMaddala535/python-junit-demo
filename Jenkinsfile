@@ -3,20 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install') {
-            steps {
-                sh '''
-                    python3 -m pip install pytest
-                '''
-            }
-        }
-
         stage('Test') {
             steps {
                 sh '''
@@ -29,6 +15,21 @@ pipeline {
         stage('Publish Test Results') {
             steps {
                 junit 'reports/junit.xml'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                    mkdir -p dist
+                    tar -czf dist/python-junit-demo-1.0.0.tar.gz app.py test_app.py
+                '''
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts 'dist/*.tar.gz'
             }
         }
     }
